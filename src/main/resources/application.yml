@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+spring:
+  application:
+    name: AuthService
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+  flyway:
+    locations: classpath:/db/migration
+    schemas: public
+    baselineOnMigrate: true
+    enabled: true
+    validateOnMigrate: true
+    validate-migration-naming: true
+    clean-on-validation-error: true
+    clean-disabled: true
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:authservice}?currentSchema=${DB_SCHEMA:public}
+    username: ${DB_USERNAME} # rajsubhod
+    password: ${DB_PASSWORD} # password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Use 'create', 'update', 'validate', or 'none' based on your needs
+    show-sql: true      # Set to true to show SQL statements in the console
+    properties:
+      hibernate:
+        format_sql: true  # Formats the SQL output
+
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.rajsubhod.authservice.serializer.UserInfoDtoSerializer
+      broker-id: ${KAFKA_BROKER_ID:1}
+    topic:
+        name: ${KAFKA_TOPIC_NAME:auth}
+
