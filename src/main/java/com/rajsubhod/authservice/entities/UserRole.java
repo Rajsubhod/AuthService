@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(name = "role_seq", sequenceName = "role_seq", allocationSize = 20)
+@SequenceGenerator(name = "role_seq", sequenceName = "role_seq", allocationSize = 1)
 @Table(name = "role")
 public class UserRole {
 
