@@ -1,0 +1,11 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+GET http://localhost:8080/auth/v1/ping
+accept: application/json
+content-type: application/json
+authorization: Bearer 1234567890
+X-Requested-With: XMLHttpRequest

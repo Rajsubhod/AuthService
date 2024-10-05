@@ -16,7 +16,7 @@ spring:
 
   flyway:
     locations: classpath:/db/migration
-    schemas: public
+    schemas: auth
     baselineOnMigrate: true
     enabled: true
     validateOnMigrate: true
@@ -25,7 +25,7 @@ spring:
     clean-disabled: true
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:authservice}?currentSchema=${DB_SCHEMA:public}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:authservice}?currentSchema=${DB_SCHEMA:auth}
     username: ${DB_USERNAME} # rajsubhod
     password: ${DB_PASSWORD} # password
     driver-class-name: org.postgresql.Driver
