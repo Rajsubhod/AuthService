@@ -30,6 +30,11 @@ public class AuthService {
         return userInfoRepository.findByUsername(userInfoDto.getUsername()).orElse(null);
     }
 
+        public String getUserByUsername(String userName){
+        UserInfo userInfo = userInfoRepository.findByUsername(userName).orElse(null);
+        return Objects.nonNull(userInfo) ? userInfo.getUserId() : null;
+    }
+
     public Boolean singupUser(UserInfoDto userInfoDto) {
 //        TODO: implement UserInfoDTO validation
         userInfoDto.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
