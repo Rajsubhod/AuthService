@@ -5,6 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +20,24 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    public static final String SECRET = "vgjehgv23jhbj2hvb3d32hbjhJHV2J3HVJ2HB4JKH2BV4KJBKBDKABDK3JB2K4BJ3HBKJAHNSDBJKHSBDH";
-    public static final long EXPIRATION_TIME = 864_000_000; // 10 days
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+
+    @Value("${SECRET}")
+    private String SECRET;
+    private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 
     public  String extractUsername(String token) {
+        logger.info("Extracting username from token");
         return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
+        logger.info("Extracting expiration from token");
         return extractClaim(token, Claims::getExpiration);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        logger.info("Extracting claima from token");
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -47,10 +56,12 @@ public class JwtService {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+        logger.info("Validating token");
         return (extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public String generateToken(String username) {
+        logger.info("Creat new token");
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
     }

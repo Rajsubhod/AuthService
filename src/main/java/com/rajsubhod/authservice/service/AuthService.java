@@ -6,37 +6,52 @@ import com.rajsubhod.authservice.entities.UserRole;
 import com.rajsubhod.authservice.message.UserInfoProducer;
 import com.rajsubhod.authservice.repository.UserInfoRepository;
 import com.rajsubhod.authservice.repository.UserRoleRepository;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserInfoRepository userInfoRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserInfoProducer userInfoProducer;
 
-    public AuthService(UserInfoRepository userInfoRepository, UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder, UserInfoProducer userInfoProducer) {
-        this.userInfoRepository = userInfoRepository;
-        this.userRoleRepository = userRoleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userInfoProducer = userInfoProducer;
-    }
-
+    /**
+     * Check if user already exists
+     * @param userInfoDto
+     * @return UserInfo
+     */
     public UserInfo checkIfUserAlreadyExists(UserInfoDto userInfoDto) {
+        logger.info("Checking if user already exists");
         return userInfoRepository.findByUsername(userInfoDto.getUsername()).orElse(null);
     }
 
-        public String getUserByUsername(String userName){
+    /**
+     * Get user by username
+     * @param userName
+     * @return userId
+     */
+    public String getUserByUsername(String userName){
+        logger.info("Fetching userInfo by username {}", userName);
         UserInfo userInfo = userInfoRepository.findByUsername(userName).orElse(null);
         return Objects.nonNull(userInfo) ? userInfo.getUserId() : null;
     }
 
+    /**
+     * Sign up user to DB and send event to kafka
+     * @param userInfoDto
+     * @return Boolean
+     */
     public Boolean singupUser(UserInfoDto userInfoDto) {
-//        TODO: implement UserInfoDTO validation
+        logger.info("Signing up user {}", userInfoDto.getUsername());
         userInfoDto.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
         if(Objects.nonNull(checkIfUserAlreadyExists(userInfoDto))){
             return false;
@@ -54,9 +69,9 @@ public class AuthService {
         );
 
         userInfoDto.setUserId(userId);
-
         userInfoRepository.save(userInfo);
         // send event to kafka
+        logger.info("Sending user info to kafka topic");
         userInfoProducer.sendEventTOQueue(userInfoDto);
         return true;
 
