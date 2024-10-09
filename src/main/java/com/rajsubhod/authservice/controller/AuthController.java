@@ -7,6 +7,7 @@ import com.rajsubhod.authservice.service.AuthService;
 import com.rajsubhod.authservice.service.JwtService;
 
 import com.rajsubhod.authservice.service.RefreshTokenService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class AuthController {
      * @return refreshToken and accessToken
      */
     @PostMapping("/v1/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserInfoDto userInfoDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody UserInfoDto userInfoDto) {
 
         try{
             logger.info("Signup request By user: {}", userInfoDto.getUsername());
