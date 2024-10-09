@@ -33,7 +33,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(userInfo);
         refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(600000));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(3600000));
 
         return refreshTokenRepository.save(refreshToken);
     }

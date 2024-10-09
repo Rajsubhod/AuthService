@@ -22,7 +22,7 @@ public class JwtService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
-    @Value("${SECRET}")
+    @Value("${jwt.secret}")
     private String SECRET;
     private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 
@@ -37,7 +37,7 @@ public class JwtService {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        logger.info("Extracting claima from token");
+        logger.info("Extracting claims from token");
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
