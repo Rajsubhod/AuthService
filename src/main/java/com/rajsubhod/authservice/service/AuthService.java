@@ -39,10 +39,20 @@ public class AuthService {
      * @param userName
      * @return userId
      */
-    public String getUserByUsername(String userName){
+    public String getUserIdByUsername(String userName){
         logger.info("Fetching userInfo by username {}", userName);
         UserInfo userInfo = userInfoRepository.findByUsername(userName).orElse(null);
         return Objects.nonNull(userInfo) ? userInfo.getUserId() : null;
+    }
+
+    public String getUserRoleByUserId(String userId){
+        logger.info("Fetching user role by userId {}", userId);
+        UserInfo userInfo = userInfoRepository.findById(userId).orElseThrow(() -> {
+            logger.error("User not found with userId {}", userId);
+            return new RuntimeException("User not found with userId " + userId);
+        });
+        return Objects.nonNull(userInfo) ? userInfo.getRoles().stream().findFirst().get().getRole() : null;
+
     }
 
     /**
@@ -76,4 +86,5 @@ public class AuthService {
         return true;
 
     }
+
 }

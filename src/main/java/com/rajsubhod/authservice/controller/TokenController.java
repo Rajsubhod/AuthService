@@ -87,14 +87,16 @@ public class TokenController {
      * @return userId
      */
     @GetMapping("/v1/ping")
-    public ResponseEntity<String> ping() {
+    public ResponseEntity<?> ping() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            String userId = authService.getUserByUsername(authentication.getName());
+            String userId = authService.getUserIdByUsername(authentication.getName());
+            String userRole = authService.getUserRoleByUserId(userId);
             logger.info("Connection request by {}", userId);
-            if (Objects.nonNull(userId)) {
+            if (Objects.nonNull(userId) && Objects.nonNull(userRole)) {
                 logger.info("Connection is alive");
-                return ResponseEntity.ok().header("userId", userId).body(userId); //TODO: make the header variable fixed
+                ResponseEntity<?> r =  ResponseEntity.ok().header("X-User-Id", userId).header("X-User-Roles", userRole).body(userId);
+                return r;
             }
         }
         logger.error("Unauthorized access");
