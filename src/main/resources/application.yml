@@ -1,5 +1,5 @@
 server:
-  port: 9020
+  port: 9010
 
 logging:
   level:
@@ -9,6 +9,8 @@ logging:
   file:
     name: ${LOG_PATH:logs/auth-service.log}
     path: ${LOG_PATH:logs/auth-service.log}
+jwt:
+  secret: ${SECRET}
 
 spring:
   application:
@@ -19,7 +21,7 @@ spring:
 
   flyway:
     locations: classpath:/db/migration
-    schemas: auth
+    schemas: ${DB_SCHEMA:auth}
     baselineOnMigrate: true
     enabled: true
     validateOnMigrate: true
@@ -43,7 +45,7 @@ spring:
 
   kafka:
     producer:
-      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost}:${KAFKA_BOOTSTRAP_PORT:9092}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: com.rajsubhod.authservice.serializer.UserInfoDtoSerializer
       broker-id: ${KAFKA_BROKER_ID:1}
